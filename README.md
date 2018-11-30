@@ -1,4 +1,4 @@
 # PTUT
 Projet Tutoré S3
 
-Ici sera héberger la base du swagger 
+Ici sera hébergé la base du swagger 

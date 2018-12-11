@@ -1,0 +1,379 @@
+---
+swagger: "2.0"
+info:
+  description: "Toutes les informations relatives aux objets se trouvent ici"
+  version: "1.0.0"
+  title: "API Projet Tutoré"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost"
+basePath: "/"
+tags:
+- name: "Capteurs"
+  description: "Accès à différentes informations à propos des capteurs"
+- name: "ESP"
+  description: "Accès aux ESP"
+- name: "BDD"
+  description: "Accès à des modifications sur la BDD (temporaire)"
+- name: "ESP 2.0"
+  description: "Accès aux nouvelles fonctions"
+schemes:
+- "http"
+- "https"
+paths:
+  /projet/functions/esp/getJson:
+    get:
+      tags:
+      - "ESP"
+      summary: "Récupère un JSON de l'ESP"
+      description: "Récupère le JSON de l'ESP"
+      operationId: "json_get"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ID"
+        in: "query"
+        description: "ID de l'ESP"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "Le JSON a été récupéré"
+        400:
+          description: "Échec de la requête. L'ID de l'ESP ne correspond pas. Pour\
+            \ plus d'informations sur les ESP, utilisez 'getList'."
+        401:
+          description: "Autorisations manquantes ou invalides"
+        404:
+          description: "Le JSON est introuvable"
+      x-swagger-router-controller: "swagger_server.controllers.capteurs_controller"
+  /projet/functions/esp/getById:
+    get:
+      tags:
+      - "ESP"
+      summary: "Récupère l'ESP"
+      description: "Récupère l'ESP grâce à son ID"
+      operationId: "get_esp"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "ID"
+        in: "query"
+        description: "ID de l'ESP"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "Le JSON a été récupéré"
+        400:
+          description: "Échec de la requête. L'ID de l'ESP ne correspond pas ou elle\
+            \ ne possède pas ce type de capteur. Pour plus d'informations sur l'ESP,\
+            \ utilisez 'getList'."
+        401:
+          description: "Autorisations manquantes ou invalides"
+        404:
+          description: "Le JSON est introuvable"
+      x-swagger-router-controller: "swagger_server.controllers.esp_controller"
+  /projet/functions/esp/getList:
+    get:
+      tags:
+      - "ESP"
+      summary: "Récupère la liste des ESP"
+      description: "Récupère la liste des ESP"
+      operationId: "get_esp_list"
+      produces:
+      - "text/plain"
+      parameters: []
+      responses:
+        200:
+          description: "Le JSON a été récupéré"
+        401:
+          description: "Autorisations manquantes ou invalides"
+        404:
+          description: "Le JSON est introuvable"
+      x-swagger-router-controller: "swagger_server.controllers.esp_controller"
+  /projet/functions/esp/setLight:
+    post:
+      tags:
+      - "ESP"
+      summary: "Allumer / éteindre la LED de l'ESP"
+      description: "Allume ou éteint la LED de l'ESP"
+      operationId: "control_post"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "idESP"
+        in: "query"
+        description: "L'ID de l'ESP"
+        required: true
+        type: "integer"
+      - name: "idCapteur"
+        in: "query"
+        description: "L'ID du capteur"
+        required: true
+        type: "integer"
+      - name: "action"
+        in: "query"
+        description: "Allume ou éteint"
+        required: true
+        type: "boolean"
+      responses:
+        200:
+          description: "La LED s'est allumée ou éteinte"
+        400:
+          description: "Échec de la requête. L'ID de l'ESP ou de la LED ne correspondent\
+            \ pas. Pour plus d'informations sur les ESP, utilisez 'getList'."
+        401:
+          description: "Autorisations manquantes ou invalides"
+        404:
+          description: "La LED est introuvable"
+      x-swagger-router-controller: "swagger_server.controllers.esp_controller"
+  /projet/functions/capteurs/getList:
+    get:
+      tags:
+      - "Capteurs"
+      summary: "Récupère la liste des capteurs liés à l'ESP"
+      description: "Récupère les capteurs liés à l'ESP"
+      operationId: "get_captors_list"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "ID"
+        in: "query"
+        description: "ID de l'ESP"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "La liste a été récupérée"
+        400:
+          description: "Échec de la requête. L'ID de l'ESP ne correspond pas. Pour\
+            \ plus d'informations sur les ESP, utilisez 'getList'."
+        401:
+          description: "Autorisations manquantes ou invalides"
+        404:
+          description: "Le JSON est introuvable"
+      x-swagger-router-controller: "swagger_server.controllers.capteurs_controller"
+  /projet/functions/capteurs/getData:
+    get:
+      tags:
+      - "Capteurs"
+      summary: "Récupère la valeur du capteur"
+      description: "Récupère la valeur du capteur"
+      operationId: "get_captor_data"
+      produces:
+      - "application/plain"
+      parameters:
+      - name: "ID"
+        in: "query"
+        description: "ID de l'ESP"
+        required: true
+        type: "integer"
+      - name: "Type"
+        in: "query"
+        description: "Type de capteur"
+        required: true
+        type: "string"
+        enum:
+        - "Temperature"
+        - "Hygrometrie"
+        - "Distance"
+      responses:
+        200:
+          description: "Le JSON a été récupéré"
+        400:
+          description: "Échec de la requête. L'ID de l'ESP ne correspond pas ou elle\
+            \ ne possède pas ce type de capteur. Pour plus d'informations sur l'ESP,\
+            \ utilisez 'getList'."
+        401:
+          description: "Autorisations manquantes ou invalides"
+        404:
+          description: "Le JSON est introuvable"
+      x-swagger-router-controller: "swagger_server.controllers.capteurs_controller"
+  /projet/functions/bdd/delete:
+    delete:
+      tags:
+      - "BDD"
+      summary: "Supprime l'ESP dans la BDD"
+      description: "Supprime l'ESP dans la BDD"
+      operationId: "delete_esp"
+      produces:
+      - "application/plain"
+      parameters:
+      - name: "ID"
+        in: "query"
+        description: "ID de l'ESP"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "L'ESP a été supprimée"
+        400:
+          description: "Échec de la requête. L'ID de l'ESP ne correspond pas ou elle\
+            \ ne possède pas ce type de capteur. Pour plus d'informations sur l'ESP,\
+            \ utilisez 'getList'."
+        401:
+          description: "Autorisations manquantes ou invalides"
+        404:
+          description: "ESP introuvable"
+      x-swagger-router-controller: "swagger_server.controllers.bdd_controller"
+  /projet/functions/bdd/update:
+    put:
+      tags:
+      - "BDD"
+      summary: "Met à jour l'ESP dans la BDD"
+      description: "Met à jour l'ESP dans la BDD"
+      operationId: "update_esp"
+      produces:
+      - "application/plain"
+      parameters:
+      - name: "ID"
+        in: "query"
+        description: "ID de l'ESP"
+        required: true
+        type: "integer"
+      - name: "IP"
+        in: "query"
+        description: "Nouvelle IP"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "L'ESP a été mis à jour"
+        400:
+          description: "Échec de la requête. L'ID de l'ESP ne correspond pas ou elle\
+            \ ne possède pas ce type de capteur. Pour plus d'informations sur l'ESP,\
+            \ utilisez 'getList'."
+        401:
+          description: "Autorisations manquantes ou invalides"
+        404:
+          description: "ESP introuvable"
+      x-swagger-router-controller: "swagger_server.controllers.bdd_controller"
+  /projet/functions/bdd/insert:
+    post:
+      tags:
+      - "BDD"
+      summary: "Ajoute une ESP dans la BDD"
+      description: "Insert une ESP dans la BDD"
+      operationId: "insert_esp"
+      produces:
+      - "application/plain"
+      parameters:
+      - name: "ID"
+        in: "query"
+        description: "ID de l'ESP"
+        required: true
+        type: "integer"
+      - name: "IP"
+        in: "query"
+        description: "IP de l'ESP"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "L'ESP a été ajoutée"
+        400:
+          description: "Échec de la requête. L'ID de l'ESP ne correspond pas ou elle\
+            \ ne possède pas ce type de capteur. Pour plus d'informations sur l'ESP,\
+            \ utilisez 'getList'."
+        401:
+          description: "Autorisations manquantes ou invalides"
+      x-swagger-router-controller: "swagger_server.controllers.bdd_controller"
+  /projet/functions/bdd/getData:
+    get:
+      tags:
+      - "BDD"
+      summary: "Récupère la valeur de tous les capteurs en BDD"
+      description: "Récupère la valeur de tous les capteurs en BDD"
+      operationId: "bdd_get_data"
+      produces:
+      - "text/plain"
+      parameters: []
+      responses:
+        200:
+          description: "La liste a été récupérée"
+        400:
+          description: "Échec de la requête. L'ID de l'ESP ne correspond pas. Pour\
+            \ plus d'informations sur les ESP, utilisez 'getList'."
+        401:
+          description: "Autorisations manquantes ou invalides"
+        404:
+          description: "Le JSON est introuvable"
+      x-swagger-router-controller: "swagger_server.controllers.bdd_controller"
+  /projet/functions/esp/sendData:
+    post:
+      tags:
+      - "ESP 2.0"
+      summary: "Envoie les données des capteurs en BDD"
+      description: "Envoie les données des capteurs en BDD"
+      operationId: "esp_send_data"
+      parameters: []
+      responses:
+        200:
+          description: "Les données s'envoient"
+      x-swagger-router-controller: "swagger_server.controllers.esp_20_controller"
+  /projet/functions/bdd/getDataByBuilding:
+    get:
+      tags:
+      - "BDD"
+      summary: "Récupère toutes les données des capteurs d'un bâtiment"
+      description: "Récupère toutes les données des capteurs d'un bâtiment"
+      operationId: "bdd_get_data_by_building"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "Batiment"
+        in: "query"
+        description: "Nom du bâtiment"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Les données s'envoient"
+        404:
+          description: "Batiment introuvable ou aucun capteur présent. 'getData' pour\
+            \ la liste"
+      x-swagger-router-controller: "swagger_server.controllers.bdd_controller"
+  /projet/functions/bdd/getDataByDate:
+    get:
+      tags:
+      - "BDD"
+      summary: "Recupère toutes les données entre deux dates"
+      description: "Récupère toutes les données des capteurs d'un bâtiment entre deux\
+        \ dates"
+      operationId: "bdd_get_data_by_date"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "Batiment"
+        in: "query"
+        description: "Nom du bâtiment"
+        required: true
+        type: "string"
+      - name: "Date1"
+        in: "query"
+        description: "Date et heure de début"
+        required: true
+        type: "string"
+        default: "01/01/1970 00:00"
+        pattern: "^\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2}$"
+        x-regex: "^\\\\d{2}\\/\\\\d{2}\\/\\\\d{4} \\\\d{2}:\\\\d{2}$"
+        x-modifiers: []
+      - name: "Date2"
+        in: "query"
+        description: "Date et heure de fin"
+        required: true
+        type: "string"
+        default: "01/01/1970 00:00"
+        pattern: "^\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2}$"
+        x-regex: "^\\\\d{2}\\/\\\\d{2}\\/\\\\d{4} \\\\d{2}:\\\\d{2}$"
+        x-modifiers: []
+      responses:
+        200:
+          description: "Les données s'envoient"
+        404:
+          description: "Batiment introuvable, mauvaise date ou aucun capteur présent.\
+            \ 'getData' pour la liste"
+      x-swagger-router-controller: "swagger_server.controllers.bdd_controller"
+definitions: {}
